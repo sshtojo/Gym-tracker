@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Workout Tracker - 10kg</title>
+    <!-- Tailwind CSS para um design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 font-sans">
+    <div class="max-w-md mx-auto">
+        <header class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-400">Home Workout Tracker</h1>
+            <p class="text-sm text-gray-400">Halteres de 10kg | Foco & Progressão</p>
+        </header>
+
+        <!-- Seletor de Dias da Rotina -->
+        <div class="grid grid-cols-2 gap-2 mb-6">
+            <button onclick="loadDay(1)" class="bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-semibold text-sm transition">Dia 1: Superiores</button>
+            <button onclick="loadDay(2)" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg font-semibold text-sm transition">Dia 2: Inferiores</button>
+            <button onclick="loadDay(4)" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg font-semibold text-sm transition">Dia 4: Puxar/Supra</button>
+            <button onclick="loadDay(5)" class="bg-gray-800 hover:bg-gray-700 p-3 rounded-lg font-semibold text-sm transition">Dia 5: Posteriores</button>
+        </div>
+
+        <!-- Contentor Dinâmico do Treino -->
+        <div id="workout-container" class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
+            <!-- Os exercícios aparecem aqui automaticamente -->
+        </div>
+    </div>
+
+    <script>
+        // Estrutura dos exercícios baseada no teu plano de 4 dias
+        const workouts = {
+            1: {
+                title: "Dia 1: Membros Superiores (Empurrar & Core)",
+                exercises: ["Supino com Halteres", "Elevações Laterais", "Remada Curvada", "Curl de Bíceps", "Prancha Abdominal"]
+            },
+            2: {
+                title: "Dia 2: Membros Inferiores + Abdominais",
+                exercises: ["Goblet Squat", "Lunges / Afagos", "Agachamento Sumô", "Elevação de Gémeos", "Elevação de Pernas", "Russian Twist"]
+            },
+            4: {
+                title: "Dia 4: Membros Superiores + Abdominais Supra",
+                exercises: ["Remada Unilateral", "Crucifixo Inverso", "Curl Martelo", "Extensão de Tríceps", "Abdominal Crunch"]
+            },
+            5: {
+                title: "Dia 5: Membros Inferiores (Posteriores & Glúteos)",
+                exercises: ["Stiff com Halteres", "Passada Reversa", "Elevação Pélvica", "Prancha Lateral"]
+            }
+        };
+
+        function loadDay(dayNum) {
+            const container = document.getElementById('workout-container');
+            const data = workouts[dayNum];
+            
+            let html = `<h2 class="text-lg font-bold mb-4 text-blue-300 border-b border-gray-700 pb-2">${data.title}</h2>`;
+            
+            data.exercises.forEach((ex, idx) => {
+                const savedKey = `day_${dayNum}_ex_${idx}`;
+                const savedVal = localStorage.getItem(savedKey) || '';
+                
+                html += `
+                    <div class="mb-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
+                        <label class="block font-semibold mb-1 text-sm text-gray-200">${ex}</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="${savedKey}" value="${savedVal}" placeholder="Ex: 10kg x 12 reps" class="w-full bg-gray-900 border border-gray-600 rounded p-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                            <button onclick="saveData('${savedKey}')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-bold transition">Salvar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function saveData(key) {
+            const val = document.getElementById(key).value;
+            localStorage.setItem(key, val);
+            
+            // Pequeno feedback visual ao salvar
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "✓";
+            btn.classList.add("bg-emerald-500");
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove("bg-emerald-500");
+            }, 1000);
+        }
+
+        // Carregar o Dia 1 por defeito ao abrir a app
+        loadDay(1);
+    </script>
+</body>
+</html>
